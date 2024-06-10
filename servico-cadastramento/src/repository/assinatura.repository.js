@@ -2,8 +2,6 @@ import { DatabaseInfo } from "../database-access/database.info";
 import { Assinatura } from "../models/assinatura.model";
 import mysql from 'mysql2/promise';
 
-// @Injectable()
-// @Dependencies(getRepositoryToken(Assinatura))
 export class AssinaturaRepository{
 
     constructor(){

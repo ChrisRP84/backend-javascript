@@ -1,10 +1,6 @@
 import { AcessoDados } from "../database-access/dados.access";
 import { query } from "../database-access/database.access";
-import { Aplicativo } from "../models/aplicativos.model";
-import { Assinatura } from "../models/assinatura.model";
-import { Cliente } from "../models/cliente.model";
 import { Dependencies } from '@nestjs/common';
-import { AssinaturaRepository } from "../repository/assinatura.repository";
 
 @Dependencies(AcessoDados)
 export class ServCadService{
@@ -12,10 +8,6 @@ export class ServCadService{
     constructor(acessoDados){
         this.acessoDados = acessoDados;
     }
-    
-    #Clientes = [];
-    #Aplicativos = [];
-    #ok = true;
 
     async getClientes(){
         const clientes = await query({
@@ -87,6 +79,44 @@ export class ServCadService{
         const result = await query({
             query: 'SELECT * FROM APLICATIVOS WHERE CODIGO = ?',
             values: [pCodAPlicativo]
+            });
+        return result;
+    }
+
+    async getAssinaturasPorCliente(pCodCli){
+
+        const result = await query({
+            query:  'SELECT X.* FROM( ' +
+                    'SELECT ' +
+                    'CODIGO, CODIGO_CLIENTE, CODIGO_APLICATIVO, INICIO_VIGENCIA, FIM_VIGENCIA, ' +
+                    'CASE WHEN CURRENT_DATE > FIM_VIGENCIA THEN ' +
+                    '  "CANCELADA" ' +
+                    'ELSE ' +
+                    '  "ATIVA" ' +
+                    'END AS STATUS ' +
+                    'FROM ASSINATURAS ' +
+                ') X ' +
+                'WHERE X.CODIGO_CLIENTE = ?',
+            values: [pCodCli]
+            });
+        return result;
+    }
+
+    async getAssinaturasPorAplicativo(pCodApp){
+
+        const result = await query({
+            query:  'SELECT X.* FROM( ' +
+                    'SELECT ' +
+                    'CODIGO, CODIGO_CLIENTE, CODIGO_APLICATIVO, INICIO_VIGENCIA, FIM_VIGENCIA, ' +
+                    'CASE WHEN CURRENT_DATE > FIM_VIGENCIA THEN ' +
+                    '  "CANCELADA" ' +
+                    'ELSE ' +
+                    '  "ATIVA" ' +
+                    'END AS STATUS ' +
+                    'FROM ASSINATURAS ' +
+                ') X ' +
+                'WHERE X.CODIGO_APLICATIVO = ?',
+            values: [pCodApp]
             });
         return result;
     }

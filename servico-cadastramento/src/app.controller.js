@@ -1,5 +1,4 @@
 import { Controller, Dependencies, Get, Post, Bind, Body, Patch, Param } from '@nestjs/common';
-import { AppService } from './app.service';
 import { ServCadService } from './services/servcad.service';
 import { Utils } from './utils/utils';
 
@@ -45,6 +44,22 @@ export class AppController {
     }
     
     return await this.servcadService.getAssinaturasPorTipo(utils.getTipoStatusBd(param.tipo)).then((result) => {
+      return JSON.stringify(result);
+    });
+  }
+
+  @Get('asscli/:codcli')
+  @Bind(Param())
+  async assinaturasPorCliente(param){
+    return await this.servcadService.getAssinaturasPorCliente(param.codcli).then((result) => {
+      return JSON.stringify(result);
+    });
+  }
+
+  @Get('assapp/:codapp')
+  @Bind(Param())
+  async assinaturasPorAplicativo(param){
+    return await this.servcadService.getAssinaturasPorAplicativo(param.codapp).then((result) => {
       return JSON.stringify(result);
     });
   }
